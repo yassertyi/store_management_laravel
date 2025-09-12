@@ -17,7 +17,7 @@ class ShippingController extends Controller
 
     public function create()
     {
-        $orders = Order::all(); // جلب جميع الطلبات للقائمة المنسدلة
+        $orders = Order::all(); 
         return view('frontend.admin.dashboard.shipping.forms_shipping', compact('orders'));
     }
 

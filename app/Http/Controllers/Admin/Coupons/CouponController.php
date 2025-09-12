@@ -18,7 +18,6 @@ class CouponController extends Controller
     // صفحة إنشاء كوبون
     public function create()
     {
-        // توليد كود عشوائي
         $code = 'CPN-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
         return view('frontend.admin.dashboard.Coupons.forms_couponts', compact('code'));
     }

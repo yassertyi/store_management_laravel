@@ -111,8 +111,6 @@ class UserController extends Controller
     }
 
 
-    // عرض نموذج تعديل بيانات المستخدم الحالي
-     // عرض نموذج تعديل بيانات المستخدم الحالي
     public function editProfile()
     {
         $user = Auth::user(); 

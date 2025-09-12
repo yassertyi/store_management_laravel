@@ -22,7 +22,7 @@ class TicketMessageController extends Controller
     public function create()
     {
         $tickets = SupportTicket::all();
-        $users   = User::all(); // 👈 أضف هذا
+        $users   = User::all(); 
         return view('frontend.admin.dashboard.supportTickets.forms_ticket_messages', compact('tickets', 'users'));
     }
 
@@ -30,13 +30,13 @@ class TicketMessageController extends Controller
     {
         $request->validate([
             'ticket_id' => 'required|exists:support_tickets,ticket_id',
-            'user_id'   => 'required|exists:users,user_id', // 👈 تحقق من المستخدم
+            'user_id'   => 'required|exists:users,user_id', 
             'message'   => 'required|string',
         ]);
 
         TicketMessage::create([
             'ticket_id' => $request->ticket_id,
-            'user_id'   => $request->user_id, // 👈 نأخذه من الفورم
+            'user_id'   => $request->user_id,
             'message'   => $request->message,
         ]);
 
@@ -54,7 +54,7 @@ class TicketMessageController extends Controller
     {
         $message = TicketMessage::findOrFail($id);
         $tickets = SupportTicket::all();
-        $users   = User::all(); // 👈 لازم نمرر المستخدمين هنا أيضًا
+        $users   = User::all(); 
         return view('frontend.admin.dashboard.supportTickets.forms_ticket_messages', compact('message', 'tickets', 'users'));
     }
 

@@ -52,7 +52,7 @@ class DashboardController extends Controller
     ->select('categories.name', DB::raw('SUM(order_items.total_price) as amount'))
     ->groupBy('categories.name')
     ->get()
-    ->toArray(); // <-- هنا تحول النتائج إلى مصفوفة
+    ->toArray(); 
 
 
         return view('frontend.admin.dashboard.home', [

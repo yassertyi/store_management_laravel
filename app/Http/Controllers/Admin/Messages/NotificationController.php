@@ -15,7 +15,7 @@ class NotificationController extends Controller
     public function index()
     {
         $notifications = Notification::with('user')->latest()->paginate(20);
-        $users = User::all(); // خيارات الإرسال
+        $users = User::all();
         return view('frontend.admin.dashboard.supportTickets.notification_all', compact('notifications', 'users'));
     }
 
@@ -47,7 +47,7 @@ class NotificationController extends Controller
                         'title' => $request->title,
                         'content' => $request->content,
                         'user_id' => $userId,
-                        'type' => $notification->type ?? 'general', // نوع افتراضي
+                        'type' => $notification->type ?? 'general',
                         'is_read' => false
                     ]);
                     $notificationIds[] = $notification->notification_id;
