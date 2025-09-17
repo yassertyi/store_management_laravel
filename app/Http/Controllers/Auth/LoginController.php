@@ -16,32 +16,36 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required',
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            // تسجيل الدخول يدوي
-            Auth::login($user);
+    if ($user && Hash::check($request->password, $user->password)) {
+        // تسجيل الدخول
+        Auth::login($user);
 
-            // التوجيه حسب نوع المستخدم
-            if ($user->user_type == 2) {
-                return redirect()->route('admin.dashboard');
-            } elseif ($user->user_type == 1) {
-                return redirect()->route('admin.sellers.index'); // أو صفحة البائع
-            } else {
-                return redirect()->route('home'); // صفحة العميل الرئيسية
-            }
+        // التوجيه حسب نوع المستخدم
+        if ($user->user_type == 2) {
+            // مسؤول (Admin)
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->user_type == 1) {
+            // بائع (Seller)
+            return redirect()->route('seller.dashboard');
+        } else {
+            // عميل (Customer)
+            return redirect()->route('home');
         }
-
-        return back()->withErrors([
-            'email' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-        ]);
     }
+
+    return back()->withErrors([
+        'email' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+    ]);
+}
+
 
     public function logout(Request $request)
     {

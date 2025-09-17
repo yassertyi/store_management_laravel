@@ -22,13 +22,12 @@ use App\Http\Controllers\Admin\ReviewHelpfulController;
 use App\Http\Controllers\Admin\WishlistController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\SellerRequestController;
 
 
 
-// المسار الرئيسي
-// Route::get('/', function () {
-//     return redirect('/admin/dashboard');
-// });
+
+
 // ==========================
 // الصفحة الرئيسية (العملاء)
 // ==========================
@@ -40,6 +39,13 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+Route::get('/seller/register-store', [SellerRequestController::class, 'showForm'])
+    ->name('seller.registerStore.form');
+
+Route::post('/seller/register-store', [SellerRequestController::class, 'store'])
+    ->name('seller.registerStore.submit');
 
 // ==========================
 // مسارات الأدمن
@@ -156,4 +162,62 @@ Route::middleware('auth')->group(function () {
         ->name('statistics.products');
 
         
+    Route::get('/seller-requests', [\App\Http\Controllers\Admin\SellerRequestController::class, 'index'])
+        ->name('seller-requests.index');
+
+    Route::get('/seller-requests/{sellerRequest}', [\App\Http\Controllers\Admin\SellerRequestController::class, 'show'])
+        ->name('seller-requests.show');
+
+Route::post('/seller-requests/{sellerRequest}/approve', [\App\Http\Controllers\Admin\SellerRequestController::class, 'approve'])
+        ->name('seller-requests.approve');
+
+Route::post('/seller-requests/{sellerRequest}/reject', [\App\Http\Controllers\Admin\SellerRequestController::class, 'reject'])
+    ->name('seller-requests.reject');
+
+
+});
+
+// ==========================
+// مسارات البائع (Seller)
+// ==========================
+Route::prefix('seller')->name('seller.')->middleware('auth')->group(function () {
+    // لوحة تحكم البائع
+    Route::get('/dashboard', [\App\Http\Controllers\Seller\DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // // المنتجات
+    // Route::resource('products', \App\Http\Controllers\Seller\ProductController::class);
+    // Route::get('products/{product}/details', [\App\Http\Controllers\Seller\ProductController::class, 'show'])
+    //     ->name('products.show');
+
+    // // التصنيفات الخاصة بالبائع
+    // Route::resource('categories', \App\Http\Controllers\Seller\CategoryController::class);
+
+    // // الطلبات
+    // Route::resource('orders', \App\Http\Controllers\Seller\OrderController::class);
+
+    // // المدفوعات
+    // Route::resource('payments', \App\Http\Controllers\Seller\PaymentController::class);
+
+    // // الكوبونات
+    // Route::resource('coupons', \App\Http\Controllers\Seller\CouponController::class);
+
+    // // التقييمات
+    // Route::resource('reviews', \App\Http\Controllers\Seller\ReviewController::class);
+
+    // // العملاء
+    // Route::resource('customers', \App\Http\Controllers\Seller\CustomerController::class);
+
+    // // الإحصائيات
+    // Route::get('/statistics', [\App\Http\Controllers\Seller\StatisticController::class, 'index'])
+    //     ->name('statistics.index');
+
+    // // الدعم الفني
+    // Route::resource('support', \App\Http\Controllers\Seller\SupportController::class);
+
+    // // إعدادات المتجر
+    // Route::get('/settings', [\App\Http\Controllers\Seller\SettingController::class, 'index'])
+    //     ->name('settings');
+
+    
 });

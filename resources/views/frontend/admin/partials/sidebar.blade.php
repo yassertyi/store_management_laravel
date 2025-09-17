@@ -51,6 +51,9 @@
                         <li class="{{ request()->is('admin/sellers') ? 'page-active' : '' }}">
                             <a href="{{ route('admin.sellers.index') }}">البائعون</a>
                         </li>
+                        <li class="{{ request()->is('admin/seller-request') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.seller-requests.index') }}">طلبات فتح حساب متجر</a>
+                        </li>
                         <li class="{{ request()->is('admin/user-activities') ? 'page-active' : '' }}">
                             <a href="">نشاطات المستخدمين</a>
                         </li>

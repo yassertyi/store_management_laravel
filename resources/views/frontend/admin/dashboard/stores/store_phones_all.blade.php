@@ -28,7 +28,7 @@
             </div>
 
             <div class="form-content">
-                <form action="{{ route('admin.admin.stores.phones.save') }}" method="POST">
+                <form action="{{ route('admin.stores.phones.save') }}" method="POST">
                     @csrf
                     <div class="table-form table-responsive" id="phones-wrapper">
                         <table class="table table-bordered">
