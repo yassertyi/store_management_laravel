@@ -66,7 +66,7 @@
                                         @if ($sellerRequest->document_path)
                                             <div class="mb-2">
                                                 <strong>صورة الرخصة التجارية:</strong><br>
-                                                <a href="{{ asset('storage/' . $sellerRequest->document_path) }}"
+                                                <a href="{{ asset($sellerRequest->document_path) }}"
                                                     target="_blank" class="btn btn-sm btn-info">
                                                     عرض الصورة
                                                 </a>

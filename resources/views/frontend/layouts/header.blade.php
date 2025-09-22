@@ -26,10 +26,10 @@
                         </div>
                     </div>
                     <div class="nav-btn ms-auto d-flex align-items-center gap-3">
-    @include('frontend.admin.partials.notifications')
-    @include('frontend.admin.partials.messages')
-    @include('frontend.admin.partials.user-menu')
-</div>
+                        @include('frontend.admin.partials.notifications')
+                        @include('frontend.admin.partials.messages')
+                        @include('frontend.admin.partials.user-menu')
+                    </div>
 
                     <!-- end nav-btn -->
                 </div>

@@ -25,7 +25,18 @@
                     <p class="text-center p-2">لا توجد إشعارات جديدة</p>
                 @endforelse
             </div>
-            <a href="{{ route('admin.notifications.index') }}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+            <a href="
+    @if(auth()->user()->user_type == 1)
+        {{ route('seller.notifications.index') }}
+    @elseif(auth()->user()->user_type == 2)
+        {{ route('admin.notifications.index') }}
+    @else
+        {{ route('home') }}
+    @endif
+" class="dropdown-item drop-reveal-btn text-center">
+    مشاهدة الكل
+</a>
+
         </div>
     </div>
 </div>

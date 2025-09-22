@@ -1,105 +1,67 @@
-<!-- end modal-shared -->
-<div class="modal-popup">
-  <div
-    class="modal fade"
-    id="loginPopupForm"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>
-            <h5 class="modal-title title" id="exampleModalLongTitle2">
-              تسجيل الدخول
-            </h5>
-            <p class="font-size-14">مرحبا! مرحبا بك في حسابك</p>
-          </div>
-          <button
-            type="button"
-            class="btn-close close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true" class="la la-close"></span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="contact-form-action">
-<form method="POST" action="{{ route('login') }}">
-    @csrf
-    <div class="input-box">
-        <label class="label-text">البريد الإلكتروني</label>
-        <div class="form-group">
-            <span class="la la-user form-icon"></span>
-            <input
-                class="form-control"
-                type="email"
-                name="email"
-                placeholder="اكتب البريد الإلكتروني الخاص بك"
-                required
-            />
-        </div>
-    </div>
-    <!-- end input-box -->
-    <div class="input-box">
-        <label class="label-text">كلمة المرور</label>
-        <div class="form-group mb-2">
-            <span class="la la-lock form-icon"></span>
-            <input
-                class="form-control"
-                type="password"
-                name="password"
-                placeholder="اكتب كلمة المرور الخاصة بك"
-                required
-            />
-        </div>
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="custom-checkbox mb-0">
-                <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="rememberchb"
-                    name="remember"
-                />
-                <label for="rememberchb">تذكرني</label>
+@extends('frontend.home.layouts.master')
+
+@section('title', 'تسجيل الدخول')
+
+@section('content')
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>تسجيل الدخول</h4>
+                    <p class="mb-0">مرحبا! ادخل إلى حسابك</p>
+                </div>
+                <div class="card-body">
+
+                    {{-- رسالة خطأ من السيشن --}}
+                    @if(session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
+                    {{-- الأخطاء --}}
+                    @if($errors->any())
+                        <div class="alert alert-danger">{{ $errors->first() }}</div>
+                    @endif
+
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="la la-user"></i></span>
+                                <input type="email" name="email" class="form-control"
+                                       placeholder="اكتب بريدك الإلكتروني" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">كلمة المرور</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="la la-lock"></i></span>
+                                <input type="password" name="password" class="form-control"
+                                       placeholder="اكتب كلمة المرور" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberchb" name="remember">
+                                <label class="form-check-label" for="rememberchb">تذكرني</label>
+                            </div>
+                            <a href="#" class="text-decoration-none">هل نسيت كلمة المرور؟</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">تسجيل الدخول</button>
+                    </form>
+
+                    <hr>
+                    <div class="text-center">
+                        <p class="mb-2">ليس لديك حساب؟</p>
+                        <a href="" class="btn btn-outline-success w-100">سجل الآن</a>
+                    </div>
+                </div>
             </div>
-            <p class="forgot-password">
-                <a href="#">هل نسيت كلمة المرور؟</a>
-            </p>
         </div>
     </div>
-    <!-- end input-box -->
-
-    @if($errors->any())
-        <div class="alert alert-danger mt-2">
-            {{ $errors->first() }}
-        </div>
-    @endif
-
-    <div class="btn-box pt-3 pb-4">
-        <button type="submit" class="theme-btn w-100">
-            تسجيل الدخول
-        </button>
-    </div>
-
-    <div class="action-box text-center">
-        <p class="font-size-14">أو تسجيل الدخول باستخدام</p>
-        <ul class="social-profile py-3">
-            <li><a href="#" class="bg-5 text-white"><i class="lab la-facebook-f"></i></a></li>
-            <li><a href="#" class="bg-6 text-white"><i class="lab la-twitter"></i></a></li>
-            <li><a href="#" class="bg-7 text-white"><i class="lab la-instagram"></i></a></li>
-            <li><a href="#" class="bg-5 text-white"><i class="lab la-linkedin-in"></i></a></li>
-        </ul>
-    </div>
-</form>
-
-          </div>
-          <!-- end contact-form-action -->
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
-<!-- end modal-popup -->
+@endsection

@@ -25,8 +25,9 @@ class Coupon extends Model
         'is_active' => 'boolean'
     ];
 
+    
     public function usages()
     {
-        return $this->hasMany(CouponUsage::class, 'coupon_id');
+        return $this->hasMany(CouponUsage::class, 'coupon_id', 'coupon_id');
     }
 }

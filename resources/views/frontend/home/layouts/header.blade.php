@@ -32,12 +32,22 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="header-right-action">
-                                <a href="#" class="theme-btn theme-btn-small theme-btn-transparent me-1"
-                                    data-bs-toggle="modal" data-bs-target="#signupPopupForm">سجل</a>
-                                <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal"
-                                    data-bs-target="#loginPopupForm">تسجيل الدخول</a>
-                            </div>
+
+
+                            @guest
+                                {{-- إذا لم يكن مسجل دخول --}}
+                                <div class="header-right-action">
+                                    <a href="#" class="theme-btn theme-btn-small theme-btn-transparent me-1"
+                                        data-bs-toggle="modal" data-bs-target="#signupPopupForm">سجل</a>
+                                            <a href="{{ route('login.form') }}" class="theme-btn theme-btn-small">تسجيل الدخول</a>
+
+                                </div>
+                            @endguest
+                            @auth
+                                {{-- إذا كان مسجل دخول --}}
+                                @include('frontend.admin.partials.user-menu')
+                            @endauth
+
                         </div>
                     </div>
                 </div>
@@ -178,7 +188,8 @@
 
                         @guest
                             <div class="nav-btn">
-                                <a href="{{ route('seller.registerStore.form') }}" class="theme-btn theme-btn-small">أضف متجرك الآن</a>
+                                <a href="{{ route('seller.registerStore.form') }}" class="theme-btn theme-btn-small">أضف
+                                    متجرك الآن</a>
                             </div>
                         @endguest
                         <!-- end nav-btn -->

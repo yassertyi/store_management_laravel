@@ -59,7 +59,6 @@
 
     @include('frontend.home.layouts.footer')
 
-    @include('frontend.auth.login-modal')
 
     <!-- start back-to-top -->
     <div id="back-to-top">

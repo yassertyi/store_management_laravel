@@ -9,7 +9,6 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-// database/migrations/xxxx_xx_xx_xxxxxx_create_support_tickets_table.php
 public function up()
 {
 Schema::create('support_tickets', function (Blueprint $table) {

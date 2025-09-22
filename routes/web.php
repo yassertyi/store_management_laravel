@@ -23,7 +23,9 @@ use App\Http\Controllers\Admin\WishlistController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SellerRequestController;
-
+use App\Http\Controllers\Seller\ProfileController;
+use App\Http\Controllers\Seller\StoreSettingsController;
+use App\Http\Middleware\CheckUserType;
 
 
 
@@ -50,7 +52,7 @@ Route::post('/seller/register-store', [SellerRequestController::class, 'store'])
 // ==========================
 // مسارات الأدمن
 // ==========================
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkUserType:2'])->group(function () {
     // لوحة التحكم الرئيسية
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -180,44 +182,91 @@ Route::post('/seller-requests/{sellerRequest}/reject', [\App\Http\Controllers\Ad
 // ==========================
 // مسارات البائع (Seller)
 // ==========================
-Route::prefix('seller')->name('seller.')->middleware('auth')->group(function () {
+Route::prefix('seller')->name('seller.')->middleware(['auth', 'checkUserType:1'])->group(function () {
     // لوحة تحكم البائع
     Route::get('/dashboard', [\App\Http\Controllers\Seller\DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // // المنتجات
-    // Route::resource('products', \App\Http\Controllers\Seller\ProductController::class);
-    // Route::get('products/{product}/details', [\App\Http\Controllers\Seller\ProductController::class, 'show'])
-    //     ->name('products.show');
 
-    // // التصنيفات الخاصة بالبائع
-    // Route::resource('categories', \App\Http\Controllers\Seller\CategoryController::class);
+     // صور المنتجات الخاصة بالبائع
+    Route::get('products/images', [\App\Http\Controllers\Seller\ProductController::class, 'imagesIndex'])->name('products.images.index');
+    Route::post('products/images/save', [\App\Http\Controllers\Seller\ProductController::class, 'saveImages'])->name('products.images.save');
+    Route::delete('products/images/{image}', [\App\Http\Controllers\Seller\ProductController::class, 'deleteImage'])->name('products.images.delete');
 
-    // // الطلبات
-    // Route::resource('orders', \App\Http\Controllers\Seller\OrderController::class);
-
-    // // المدفوعات
-    // Route::resource('payments', \App\Http\Controllers\Seller\PaymentController::class);
-
-    // // الكوبونات
-    // Route::resource('coupons', \App\Http\Controllers\Seller\CouponController::class);
-
-    // // التقييمات
-    // Route::resource('reviews', \App\Http\Controllers\Seller\ReviewController::class);
-
-    // // العملاء
-    // Route::resource('customers', \App\Http\Controllers\Seller\CustomerController::class);
-
-    // // الإحصائيات
-    // Route::get('/statistics', [\App\Http\Controllers\Seller\StatisticController::class, 'index'])
-    //     ->name('statistics.index');
-
-    // // الدعم الفني
-    // Route::resource('support', \App\Http\Controllers\Seller\SupportController::class);
-
-    // // إعدادات المتجر
-    // Route::get('/settings', [\App\Http\Controllers\Seller\SettingController::class, 'index'])
-    //     ->name('settings');
-
+    // متغيرات المنتجات الخاصة بالبائع
+    Route::get('products/variants', [\App\Http\Controllers\Seller\ProductController::class, 'variantsIndex'])->name('products.variants.index');
+    Route::post('products/variants/save', [\App\Http\Controllers\Seller\ProductController::class, 'saveVariants'])->name('products.variants.save');
+    Route::delete('products/variants/{variant}', [\App\Http\Controllers\Seller\ProductController::class, 'deleteVariant'])->name('products.variants.delete');
     
+   // المنتجات
+    Route::resource('products', \App\Http\Controllers\Seller\ProductController::class);
+
+    // الطلبات الخاصة بالبائع
+    Route::get('orders', [\App\Http\Controllers\Seller\SellerOrderController::class, 'index'])
+        ->name('orders.index');
+        // تفاصيل الطلب
+Route::get('orders/{order}', [\App\Http\Controllers\Seller\SellerOrderController::class, 'show'])
+    ->name('orders.show');
+
+// تحديث حالة الطلب أو حالة الدفع
+    Route::patch('orders/{order}/update-status', [\App\Http\Controllers\Seller\SellerOrderController::class, 'updateStatus'])
+        ->name('orders.updateStatus');
+
+
+        // المدفوعات
+    Route::get('payments', [\App\Http\Controllers\Seller\Payment\PaymentController::class, 'index'])->name('payments.index');
+    Route::get('payments/{id}', [\App\Http\Controllers\Seller\Payment\PaymentController::class, 'show'])->name('payments.show');
+    
+    // طرق الدفع الخاصة بالمتجر
+     Route::get('store-payment-methods', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'index'])->name('storePaymentMethods.index');
+    Route::get('store-payment-methods/create', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'create'])->name('storePaymentMethods.create');
+    Route::post('store-payment-methods', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'store'])->name('storePaymentMethods.store');
+    Route::get('store-payment-methods/{id}/edit', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'edit'])->name('storePaymentMethods.edit');
+    Route::put('store-payment-methods/{id}', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'update'])->name('storePaymentMethods.update');
+    Route::delete('store-payment-methods/{id}', [\App\Http\Controllers\Seller\Payment\StorePaymentMethodController::class, 'destroy'])->name('storePaymentMethods.destroy');
+
+    Route::resource('coupons', \App\Http\Controllers\Seller\CouponController::class);
+    // التقييمات
+    Route::get('reviews', [\App\Http\Controllers\Seller\SellerReviewController::class, 'index'])->name('reviews.index');
+    Route::get('review-helpful', [\App\Http\Controllers\Seller\ReviewHelpfulController::class, 'index'])->name('review-helpful.index');
+    Route::get('wishlists', [\App\Http\Controllers\Seller\SellerWishlistController::class, 'index'])->name('wishlists.index');
+Route::delete('wishlists/{id}', [\App\Http\Controllers\Seller\SellerWishlistController::class, 'destroy'])->name('seller.wishlists.destroy');
+
+
+// تقارير المبيعات
+Route::get('seller/statistics/sales', [\App\Http\Controllers\Seller\StatisticsController::class, 'sales'])
+    ->name('seller.statistics.sales');
+
+// تقارير المستخدمين
+Route::get('seller/statistics/users', [\App\Http\Controllers\Seller\StatisticsController::class, 'users'])
+    ->name('seller.statistics.users');
+
+// تقارير المنتجات
+Route::get('seller/statistics/products', [\App\Http\Controllers\Seller\StatisticsController::class, 'products'])
+    ->name('seller.statistics.products');
+
+    Route::resource('notifications', \App\Http\Controllers\Seller\NotificationController::class);
+
+    Route::post('notifications/mark-all-read', [\App\Http\Controllers\Seller\NotificationController::class, 'markAllRead'])->name('seller.notifications.markAllRead');
+
+     Route::get('/store-settings', [\App\Http\Controllers\Seller\StoreSettingsController::class, 'edit'])->name('seller.store.edit');
+    Route::put('/store-settings', [\App\Http\Controllers\Seller\StoreSettingsController::class, 'update'])->name('seller.store.update');
+    Route::post('/store-settings/address', [\App\Http\Controllers\Seller\StoreSettingsController::class, 'addAddress'])->name('seller.store.addAddress');
+    Route::post('/store-settings/phone', [\App\Http\Controllers\Seller\StoreSettingsController::class, 'addPhone'])->name('seller.store.addPhone');
+
+    // الدعم الفني للبائعين
+Route::prefix('seller/support')->name('seller.support.')->middleware('auth')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Seller\SupportTicketController::class, 'index'])->name('index');
+    Route::get('/create', [\App\Http\Controllers\Seller\SupportTicketController::class, 'create'])->name('create');
+    Route::post('/', [\App\Http\Controllers\Seller\SupportTicketController::class, 'store'])->name('store');
+    Route::get('/{ticket}', [\App\Http\Controllers\Seller\SupportTicketController::class, 'show'])->name('show');
+    Route::post('/{ticket}/close', [\App\Http\Controllers\Seller\SupportTicketController::class, 'close'])->name('close');
+    Route::post('/{ticket}/messages', [\App\Http\Controllers\Seller\TicketMessageController::class, 'store'])->name('messages.store');
+});
+
+Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+
+
 });

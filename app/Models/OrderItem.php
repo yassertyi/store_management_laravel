@@ -29,6 +29,7 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+    
 
     public function variant()
     {

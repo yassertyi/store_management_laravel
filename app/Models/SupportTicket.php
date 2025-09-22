@@ -16,17 +16,19 @@ class SupportTicket extends Model
         'priority', 'assigned_to'
     ];
 
+    // علاقة التذكرة بالعميل
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-public function assignedTo()
-{
-    return $this->belongsTo(User::class, 'assigned_to');
-}
+    // علاقة التذكرة بالبائع المسؤول
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'user_id');
+    }
 
-
+    // علاقة التذكرة بالرسائل المرتبطة بها
     public function messages()
     {
         return $this->hasMany(TicketMessage::class, 'ticket_id');
