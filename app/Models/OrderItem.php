@@ -35,4 +35,11 @@ class OrderItem extends Model
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
+
+    // علاقة مع التقييمات - إصلاح هنا
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'order_id', 'order_id')
+                    ->where('product_id', $this->product_id);
+    }
 }

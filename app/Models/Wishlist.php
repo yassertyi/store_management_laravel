@@ -1,5 +1,4 @@
 <?php
-// app/Models/Wishlist.php
 
 namespace App\Models;
 

@@ -1,118 +1,94 @@
-<!-- ================================
-START FEATURED PRODUCTS AREA
-================================= -->
 <section class="featured-products-area section-padding">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-heading text-center">
-          <h2 class="sec__title line-height-55">
-            منتجات مميزة
-          </h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2 class="sec__title line-height-55">منتجات مميزة</h2>
+                        <p>اكتشف أفضل منتجاتنا المختارة بعناية</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="filter-tabs">
+                        <div class="filter-tab active" data-filter="all">الكل</div>
+                        <div class="filter-tab" data-filter="new">جديد</div>
+                        <div class="filter-tab" data-filter="sale">عروض</div>
+                        <div class="filter-tab" data-filter="bestseller">الأكثر مبيعاً</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Options -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="view-options">
+                        <div class="view-btn active" data-view="grid">
+                            <i class="fas fa-th"></i>
+                        </div>
+                        <div class="view-btn" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row padding-top-50px products-container">
+                <!-- سيتم إضافة المنتجات ديناميكياً باستخدام JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <button id="load-more" class="theme-btn">تحميل المزيد</button>
+                </div>
+            </div>
         </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-12 -->
+    </section>
+    <!-- ================================
+    END FEATURED PRODUCTS AREA
+    ================================= -->
+
+    <!-- Quick View Modal -->
+    <div class="modal" id="quickViewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">معاينة سريعة</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalProductImage" src="" alt="Product Image">
+                </div>
+                <div class="modal-details">
+                    <h2 id="modalProductTitle"></h2>
+                    <div class="card-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="rating-count">(125 تقييم)</span>
+                    </div>
+                    <div class="modal-price">
+                        <span id="modalProductPrice"></span>
+                        <span id="modalProductOldPrice" class="before-price"></span>
+                    </div>
+                    <p id="modalProductDescription" class="modal-description"></p>
+                    <div class="stock-status in-stock">متوفر في المخزون</div>
+                    <div class="modal-actions">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="text" class="quantity-input" value="1" readonly>
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <a href="#" class="theme-btn">أضف إلى السلة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- end row -->
-    <div class="row padding-top-50px">
-      <div class="col-lg-3 col-md-6">
-        <div class="card-item product-card">
-          <div class="card-img">
-            <a href="product-single.html" class="d-block">
-              <img src="{{ asset('static/images/featured1.jpg') }}" alt="product-img" />
-            </a>
-            <span class="badge">جديد</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="product-single.html">جهاز لوحي بشاشة 10 بوصة</a>
-            </h3>
-            <div class="card-price">
-              <span class="price__num">$399.00</span>
-            </div>
-            <div class="card-action">
-              <a href="cart.html" class="theme-btn">أضف إلى السلة</a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-3 -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card-item product-card">
-          <div class="card-img">
-            <a href="product-single.html" class="d-block">
-              <img src="{{ asset('static/images/featured2.jpg') }}" alt="product-img" />
-            </a>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="product-single.html">نظارات شمسية عصرية</a>
-            </h3>
-            <div class="card-price">
-              <span class="price__num">$79.00</span>
-            </div>
-            <div class="card-action">
-              <a href="cart.html" class="theme-btn">أضف إلى السلة</a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-3 -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card-item product-card">
-          <div class="card-img">
-            <a href="product-single.html" class="d-block">
-              <img src="{{ asset('static/images/featured3.jpg') }}" alt="product-img" />
-            </a>
-            <span class="badge">-25%</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="product-single.html">سماعات لاسلكية</a>
-            </h3>
-            <div class="card-price">
-              <span class="price__num">$129.00</span>
-              <span class="price__num before-price">$159.00</span>
-            </div>
-            <div class="card-action">
-              <a href="cart.html" class="theme-btn">أضف إلى السلة</a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-3 -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card-item product-card">
-          <div class="card-img">
-            <a href="product-single.html" class="d-block">
-              <img src="{{ asset('static/images/featured4.jpg') }}" alt="product-img" />
-            </a>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="product-single.html">حذاء رياضي مريح</a>
-            </h3>
-            <div class="card-price">
-              <span class="price__num">$89.00</span>
-            </div>
-            <div class="card-action">
-              <a href="cart.html" class="theme-btn">أضف إلى السلة</a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-3 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end featured-products-area -->
-<!-- ================================
-END FEATURED PRODUCTS AREA
-================================= -->

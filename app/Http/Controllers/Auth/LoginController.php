@@ -15,7 +15,7 @@ class LoginController extends Controller
         return view('frontend.auth.login-modal');
     }
 
-    public function login(Request $request)
+public function login(Request $request)
 {
     $request->validate([
         'email'    => 'required|email',
@@ -30,14 +30,11 @@ class LoginController extends Controller
 
         // التوجيه حسب نوع المستخدم
         if ($user->user_type == 2) {
-            // مسؤول (Admin)
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard'); // لوحة تحكم الأدمن
         } elseif ($user->user_type == 1) {
-            // بائع (Seller)
-            return redirect()->route('seller.dashboard');
+            return redirect()->route('seller.dashboard'); // لوحة تحكم البائع
         } else {
-            // عميل (Customer)
-            return redirect()->route('home');
+            return redirect()->route('customer.dashboard'); // لوحة تحكم العميل
         }
     }
 

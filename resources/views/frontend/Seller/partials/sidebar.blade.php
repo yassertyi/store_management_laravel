@@ -8,7 +8,6 @@
         </div>
 
         <!-- البروفايل -->
-        <!-- البروفايل -->
 <div class="author-content position-relative mb-3">
     <div class="d-flex align-items-center">
         <div class="author-img avatar-sm position-relative">

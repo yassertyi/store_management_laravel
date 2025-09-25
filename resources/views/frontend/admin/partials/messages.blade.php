@@ -1,22 +1,32 @@
 <div class="notification-item me-2">
     <div class="dropdown">
+        @php
+            $userType = Auth::user()->user_type ?? null;
+            // عداد الرسائل غير المقروءة
+            $unreadMessagesCount = $unreadMessagesCount ?? 0;
+        @endphp
+
         <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" 
            id="messageDropdownMenu" data-bs-toggle="dropdown" 
            aria-haspopup="true" aria-expanded="false" 
            onclick="markMessagesRead()">
             <i class="la la-envelope"></i>
-            <span class="noti-count" id="message-count">{{ $unreadMessagesCount ?? 0 }}</span>
+            <span class="noti-count" id="message-count">{{ $unreadMessagesCount }}</span>
         </a>
 
         <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
             <div class="dropdown-header drop-reveal-header">
-                <h6 class="title">لديك <strong class="text-black">{{ $unreadMessagesCount ?? 0 }}</strong> رسائل</h6>
+                <h6 class="title">لديك <strong class="text-black">{{ $unreadMessagesCount }}</strong> رسائل</h6>
             </div>
 
             <div class="list-group drop-reveal-list">
                 @forelse($unreadMessages as $message)
-                    <a href="{{ route('admin.chats.show', $message->chat_id) }}" 
-                       class="list-group-item list-group-item-action">
+                    <a href="
+                        @if($userType == 2) {{ route('admin.chats.show', $message->chat_id) }}
+                        @elseif($userType == 1) {{ route('seller.seller.support.show', $message->chat_id) }}
+                        @elseif($userType == 0) {{ route('customer.support.tickets.show', $message->chat_id) }}
+                        @endif
+                    " class="list-group-item list-group-item-action">
                         <div class="msg-body d-flex align-items-center">
                             <div class="avatar flex-shrink-0 me-3">
                                 @if($message->sender->profile_photo)
@@ -43,23 +53,34 @@
                 @endforelse
             </div>
 
-            <a href="{{ route('admin.messages.index') }}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+            <a href="
+                @if($userType == 2) {{ route('admin.messages.index') }}
+                @elseif($userType == 1) {{ route('seller.notifications.index') }}
+                @elseif($userType == 0) {{ route('customer.notifications.index') }}
+                @endif
+            " class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
         </div>
     </div>
 </div>
 
 <script>
 function markMessagesRead() {
-    fetch("{{ route('admin.messages.markRead') }}", {
+    let route = '';
+    @if($userType == 2)
+        route = "{{ route('admin.messages.markRead') }}";
+    @elseif($userType == 1)
+        route = "{{ route('seller.seller.notifications.markAllRead') }}";
+    @elseif($userType == 0)
+        route = "{{ route('customer.notifications.markAllRead') }}";
+    @endif
+
+    fetch(route, {
         method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        }
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
     })
     .then(response => response.json())
     .then(data => {
         if(data.success) {
-            // تحديث العداد إلى 0 فورًا
             document.getElementById('message-count').textContent = 0;
         }
     });

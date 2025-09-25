@@ -28,6 +28,8 @@
             <a href="
     @if(auth()->user()->user_type == 1)
         {{ route('seller.notifications.index') }}
+    @elseif(auth()->user()->user_type == 0)
+        {{ route('customer.notifications.index') }}
     @elseif(auth()->user()->user_type == 2)
         {{ route('admin.notifications.index') }}
     @else

@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="{{ asset('static/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('static/css/style-rtl.css') }}" />
     
-    @yield('styles')
+    @yield('style')
 </head>
 <body>
     <!-- start cssload-loader -->

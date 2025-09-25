@@ -114,7 +114,7 @@
 
                     <div class="order-grid-layout">
                         {{-- صندوق تفاصيل الطلب --}}
-                        <div class="order-card">
+                        <div class="order-card full-width">
                             <div class="card-header">
                                 <h4 class="card-title">
                                     <i class="la la-shopping-cart me-2"></i>معلومات الطلب
@@ -379,59 +379,8 @@
                                 @endif
                             </div>
                         </div>
-
-                        {{-- صندوق عنوان الشحن --}}
-                        <div class="order-card">
-                            <div class="card-header">
-                                <h4 class="card-title">
-                                    <i class="la la-map-marker me-2"></i>عنوان الشحن
-                                </h4>
-                            </div>
-                            <div class="card-body">
-                                @php
-                                    $shippingAddress = $order->addresses->where('address_type', 'shipping')->first();
-                                @endphp
-
-                                @if ($shippingAddress)
-                                    <div class="address-details">
-                                        <div class="detail-item">
-                                            <span class="detail-label">الاسم:</span>
-                                            <span class="detail-value">{{ $shippingAddress->first_name }}
-                                                {{ $shippingAddress->last_name }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">البريد الإلكتروني:</span>
-                                            <span class="detail-value">{{ $shippingAddress->email }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">رقم الهاتف:</span>
-                                            <span class="detail-value">{{ $shippingAddress->phone }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">البلد:</span>
-                                            <span class="detail-value">{{ $shippingAddress->country }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">المدينة:</span>
-                                            <span class="detail-value">{{ $shippingAddress->city }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">الشارع:</span>
-                                            <span class="detail-value">{{ $shippingAddress->street }}</span>
-                                        </div>
-                                        <div class="detail-item">
-                                            <span class="detail-label">الرمز البريدي:</span>
-                                            <span class="detail-value">{{ $shippingAddress->zip_code }}</span>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="alert alert-info text-center">لا يوجد عنوان شحن متاح</div>
-                                @endif
-                            </div>
-                        </div>
-
                         {{-- صندوق المنتجات --}}
-                        <div class="order-card">
+                        <div class="order-card full-width">
                             <div class="card-header">
                                 <h4 class="card-title">
                                     <i class="la la-shopping-bag me-2"></i>المنتجات في الطلب
@@ -498,6 +447,58 @@
                             </div>
                         </div>
 
+
+                        {{-- صندوق عنوان الشحن --}}
+                        <div class="order-card">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    <i class="la la-map-marker me-2"></i>عنوان الشحن
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                @php
+                                    $shippingAddress = $order->addresses->where('address_type', 'shipping')->first();
+                                @endphp
+
+                                @if ($shippingAddress)
+                                    <div class="address-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">الاسم:</span>
+                                            <span class="detail-value">{{ $shippingAddress->first_name }}
+                                                {{ $shippingAddress->last_name }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">البريد الإلكتروني:</span>
+                                            <span class="detail-value">{{ $shippingAddress->email }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">رقم الهاتف:</span>
+                                            <span class="detail-value">{{ $shippingAddress->phone }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">البلد:</span>
+                                            <span class="detail-value">{{ $shippingAddress->country }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">المدينة:</span>
+                                            <span class="detail-value">{{ $shippingAddress->city }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">الشارع:</span>
+                                            <span class="detail-value">{{ $shippingAddress->street }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">الرمز البريدي:</span>
+                                            <span class="detail-value">{{ $shippingAddress->zip_code }}</span>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info text-center">لا يوجد عنوان شحن متاح</div>
+                                @endif
+                            </div>
+                        </div>
+
+                        
                         {{-- صندوق تفاصيل الدفع --}}
                         <div class="order-card">
                             <div class="card-header">
@@ -618,45 +619,57 @@
 
         .order-card {
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .order-card.full-width {
+            grid-column: 1 / -1;
         }
 
         .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
         }
 
         .card-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px 24px;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .card-title {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
-            color: #2d3e50;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 8px;
         }
 
         .card-body {
-            padding: 20px;
+            padding: 24px;
         }
 
         .order-details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
         }
 
         .detail-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #f1f1f1;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e9ecef;
         }
 
         .detail-item:last-child {
@@ -665,11 +678,14 @@
 
         .detail-label {
             font-weight: 600;
-            color: #555;
+            color: #495057;
+            font-size: 14px;
         }
 
         .detail-value {
-            color: #333;
+            color: #212529;
+            font-weight: 500;
+            text-align: left;
         }
 
         .customer-info {
@@ -680,7 +696,6 @@
 
         .customer-details {
             width: 100%;
-            margin-top: 15px;
         }
 
         .payment-details,
@@ -691,29 +706,72 @@
             gap: 12px;
         }
 
-        .action-buttons {
+        .address-details .detail-item {
+            border-bottom: none;
+            padding: 8px 0;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .address-details .detail-item strong {
+            margin-bottom: 4px;
+        }
+
+        .address-section {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+            height: 100%;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
         }
 
         @media (max-width: 1200px) {
             .order-grid-layout {
                 grid-template-columns: 1fr;
             }
+        }
 
+        @media (max-width: 768px) {
             .order-details-grid {
                 grid-template-columns: 1fr;
             }
 
-            .action-buttons .d-flex {
-                flex-direction: column;
+            .card-body {
+                padding: 16px;
             }
 
-            .action-buttons .btn {
-                margin-bottom: 10px;
-                width: 100%;
+            .card-header {
+                padding: 14px 16px;
+            }
+
+            .form-title-wrap {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .form-title-wrap .title {
+                font-size: 20px;
+            }
+        }
+
+        @media print {
+
+            .form-title-wrap .bg-secondary,
+            .btn {
+                display: none !important;
+            }
+
+            .order-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
             }
         }
     </style>

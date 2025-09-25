@@ -30,4 +30,5 @@ class Customer extends Model
     {
         return $this->hasMany(SupportTicket::class, 'customer_id');
     }
+    
 }

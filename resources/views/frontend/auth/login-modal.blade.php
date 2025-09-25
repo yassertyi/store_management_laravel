@@ -11,6 +11,12 @@
                     <h4>تسجيل الدخول</h4>
                     <p class="mb-0">مرحبا! ادخل إلى حسابك</p>
                 </div>
+                <!-- رسالة النجاح -->
+                @if(session('success'))
+                    <div class="alert alert-success text-center" role="alert" style="border-radius:10px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <div class="card-body">
 
                     {{-- رسالة خطأ من السيشن --}}
@@ -57,8 +63,19 @@
                     <hr>
                     <div class="text-center">
                         <p class="mb-2">ليس لديك حساب؟</p>
-                        <a href="" class="btn btn-outline-success w-100">سجل الآن</a>
+                        <a href="{{ route('register.form') }}" class="btn btn-outline-success w-100">سجل الآن</a>
                     </div>
+
+                    <!-- التسجيل باستخدام حسابات التواصل -->
+                        <div class="action-box text-center">
+                            <p class="font-size-14">أو قم بالتسجيل باستخدام</p>
+                            <ul class="social-profile py-3">
+                                <li><a href="#" class="bg-5 text-white"><i class="lab la-facebook-f"></i></a></li>
+                                <li><a href="#" class="bg-6 text-white"><i class="lab la-twitter"></i></a></li>
+                                <li><a href="#" class="bg-7 text-white"><i class="lab la-instagram"></i></a></li>
+                                <li><a href="#" class="bg-5 text-white"><i class="lab la-linkedin-in"></i></a></li>
+                            </ul>
+                        </div>
                 </div>
             </div>
         </div>

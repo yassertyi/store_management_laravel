@@ -95,4 +95,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(SupportTicket::class, 'customer_id');
     }
+    public function orders()
+    {
+        return $this->hasManyThrough(
+            Order::class,
+            Customer::class,
+            'user_id', // Foreign key on customers table
+            'customer_id', // Foreign key on orders table
+            'user_id', // Local key on users table
+            'customer_id' // Local key on customers table
+        );
+    }
 }

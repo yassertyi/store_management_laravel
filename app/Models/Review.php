@@ -34,4 +34,11 @@ class Review extends Model
     {
         return $this->belongsTo(Order::class, 'order_id');
     }
+
+    // علاقة مع order_item (اختيارية)
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class, 'order_id', 'order_id')
+                    ->where('product_id', $this->product_id);
+    }
 }
