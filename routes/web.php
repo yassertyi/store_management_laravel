@@ -27,6 +27,7 @@ use App\Http\Controllers\Customer\CustomerDashboardController;
 use App\Http\Controllers\Customer\CustomerOrderController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\SupportController;
+use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Seller\ProfileController;
 use App\Http\Controllers\Seller\StoreSettingsController;
 use App\Http\Middleware\CheckUserType;
@@ -35,9 +36,24 @@ use App\Http\Middleware\CheckUserType;
 
 
 // ==========================
-// الصفحة الرئيسية (العملاء)
+// الصفحات العامة / العملاء
 // ==========================
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::prefix('/')->name('front.')->group(function () {
+    // الصفحة الرئيسية
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    // صفحة السلة
+    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+
+    // صفحة المنتجات
+    Route::get('/products', [App\Http\Controllers\Front\ProductController::class, 'index'])->name('products.index');
+Route::post('/wishlist/add', [App\Http\Controllers\Front\ProductController::class, 'addToWishlist'])->name('wishlist.add');
+Route::post('/wishlist/remove', [App\Http\Controllers\Front\ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
+Route::get('/wishlist/check/{productId}', [App\Http\Controllers\Front\ProductController::class, 'checkWishlistStatus'])->name('wishlist.check');
+    
+});
+
+
 
 // ==========================
 // تسجيل الدخول والخروج

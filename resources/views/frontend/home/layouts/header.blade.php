@@ -49,7 +49,7 @@
                     <div class="menu-wrapper">
                         <a href="#" class="down-button"><i class="la la-angle-down"></i></a>
                         <div class="logo">
-                            <a href="{{ route('home') }}"><img src="{{ asset('static/images/logo.png') }}" alt="logo" /></a>
+                            <a href="{{ route('front.home') }}"><img src="{{ asset('static/images/logo.png') }}" alt="logo" /></a>
                             <div class="menu-toggler">
                                 <i class="la la-bars"></i>
                                 <i class="la la-times"></i>
@@ -61,7 +61,7 @@
                                     <li>
                                         <a href="#">الصفحة الرئيسية <i class="la la-angle-down"></i></a>
                                         <ul class="dropdown-menu-item">
-                                            <li><a href="index.html">الصفحة الرئيسية - الرئيسية</a></li>
+                                            <li><a href="{{ route('front.home') }}">الصفحة الرئيسية - الرئيسية</a></li>
                                             <li><a href="index2.html">الصفحة الرئيسية - الإلكترونيات</a></li>
                                             <li><a href="index3.html">الصفحة الرئيسية - الأزياء</a></li>
                                         </ul>
@@ -136,7 +136,7 @@
 
                         @auth
                             <div class="nav-btn">
-                                <a href="cart.html" class="theme-btn position-relative">
+                                <a href="{{ route('front.cart.index') }}" class="theme-btn position-relative">
                                     <i class="la la-shopping-cart"></i>
                                     <span class="cart-count">3</span>
                                 </a>

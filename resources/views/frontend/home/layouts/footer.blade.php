@@ -9,7 +9,7 @@
       <div class="col-lg-3 responsive-column">
         <div class="footer-item">
           <div class="footer-logo padding-bottom-30px">
-            <a href="{{ route('home') }}" class="foot__logo"
+            <a href="{{ route('front.home') }}" class="foot__logo"
               ><img src="{{ asset('static/images/logo.png') }}" alt="logo"
             /></a>
           </div>

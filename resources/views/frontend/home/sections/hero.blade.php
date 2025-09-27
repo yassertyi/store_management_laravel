@@ -1,5 +1,4 @@
-<!-- Hero Section -->
-    <section class="hero-wrapper">
+    <section class="hero-wrapper products-hero-wrapper">
         <div class="hero-box hero-bg">
             <span class="line-bg line-bg1"></span>
             <span class="line-bg line-bg2"></span>
@@ -13,33 +12,29 @@
                         <div class="hero-content pb-5">
                             <div class="section-heading">
                                 <h2 class="sec__title cd-headline zoom">
-                                    تسوق الآن واحصل على
+                                    اكتشف جميع
                                     <span class="cd-words-wrapper">
-                                        <b class="is-visible">خصومات</b>
-                                        <b>عروض</b>
-                                        <b>منتجات حصرية</b>
-                                        <b>هدايا مجانية</b>
+                                        <b class="is-visible">المنتجات</b>
+                                        <b>العروض</b>
+                                        <b>الصفقات</b>
+                                        <b>الخصومات</b>
                                     </span>
-                                    تصل إلى 50%
+                                    المتاحة لدينا
                                 </h2>
                             </div>
                         </div>
 
                         <div class="search-fields-container">
                             <div class="contact-form-action">
-                                <form action="" method="GET" class="row align-items-center">
-                                    <div class="col-lg-8 pe-0">
+                                <form action="{{ route('front.products.index') }}" method="GET" class="row align-items-center">
+                                    <div class="col-lg-6 pe-0">
                                         <div class="input-box">
                                             <label class="label-text">ماذا تبحث عنه؟</label>
                                             <div class="form-group">
                                                 <span class="la la-search form-icon"></span>
-                                                <input
-                                                    class="form-control"
-                                                    type="text"
-                                                    name="search"
+                                                <input class="form-control" type="text" name="search"
                                                     placeholder="ابحث عن المنتجات والعلامات التجارية..."
-                                                    value=""
-                                                />
+                                                    value="{{ request('search') }}" />
                                             </div>
                                         </div>
                                     </div>
@@ -50,17 +45,38 @@
                                                 <div class="select-contain w-auto">
                                                     <select class="select-contain-select" name="category_id">
                                                         <option value="0">جميع الفئات</option>
-                                                        <option value="1">إلكترونيات</option>
-                                                        <option value="2">ملابس</option>
-                                                        <option value="3">منزلية</option>
-                                                        <option value="4">رياضية</option>
+                                                        @foreach ($categories as $category)
+                                                            <option value="{{ $category->category_id }}"
+                                                                {{ request('category_id') == $category->category_id ? 'selected' : '' }}>
+                                                                {{ $category->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 pe-0">
+                                        <div class="input-box">
+                                            <label class="label-text">المتجر</label>
+                                            <div class="form-group select2-container-wrapper">
+                                                <div class="select-contain w-auto">
+                                                    <select class="select-contain-select" name="store_id">
+                                                        <option value="0">جميع المتاجر</option>
+                                                        @foreach ($stores as $store)
+                                                            <option value="{{ $store->store_id }}"
+                                                                {{ request('store_id') == $store->store_id ? 'selected' : '' }}>
+                                                                {{ $store->store_name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-2">
-                                        <button type="submit" class="theme-btn w-100 text-center margin-top-20px">بحث</button>
+                                        <button type="submit"
+                                            class="theme-btn w-100 text-center margin-top-20px">بحث</button>
                                     </div>
                                 </form>
                             </div>
