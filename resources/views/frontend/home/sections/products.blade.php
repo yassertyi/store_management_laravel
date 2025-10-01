@@ -14,7 +14,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card-item product-card">
                         <div class="card-img">
-                            <a href="" class="d-block">
+                            <a href="{{ route('front.products.show', $product->product_id) }}" class="d-block">
                                 <img src="{{ $product->images->first() ? asset($product->images->first()->image_path) : 'https://via.placeholder.com/500x300' }}"
                                     alt="{{ $product->title }}" />
                             </a>
@@ -27,9 +27,12 @@
                                 <span class="badge">جديد</span>
                             @endif
 
-                            <div class="add-to-wishlist icon-element" title="إضافة إلى المفضلة">
-                                <i class="far fa-heart"></i>
-                            </div>
+                            <button class="action-btn wishlist-btn" 
+                                    data-product-id="{{ $product->product_id }}" 
+                                    title="إضافة إلى المفضلة"
+                                    data-in-wishlist="">
+                                <i class=" fa-heart"></i>
+                            </button>
                         </div>
 
                         <div class="card-body">
@@ -60,9 +63,15 @@
                                         </span>
                                     @endif
                                 </p>
-                                <a href="" class="btn-text">
+                                
+                                <!-- زر إضافة إلى السلة باستخدام AJAX -->
+                                <button class="btn-text add-to-cart-btn"
+                                    data-product-id="{{ $product->product_id }}"
+                                    data-store-id="{{ $product->store_id }}"
+                                    data-product-title="{{ $product->title }}"
+                                    data-quantity="1">
                                     أضف إلى السلة <i class="fas fa-shopping-cart"></i>
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>

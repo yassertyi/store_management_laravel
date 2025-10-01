@@ -118,75 +118,55 @@
                         </thead>
                         <tbody>
                             @forelse($orders as $order)
-                                @forelse($order->items as $item)
-                                    @if ($item->product)
-                                        <tr>
-                                            <td>{{ $order->order_number }}</td>
-                                            <td>{{ $order->customer->user->name ?? 'غير محدد' }}</td>
-                                            <td>{{ $item->product->title }}</td>
-                                            <td>{{ $item->quantity }}</td>
-                                            <td>{{ $item->total_price }}</td>
-                                            <td>
-                                                @switch($order->status)
-                                                    @case('pending')
-                                                        <span class="badge text-bg-warning">قيد الانتظار</span>
-                                                    @break
+    <tr>
+        <td>{{ $order->order_number }}</td>
+        <td>{{ $order->customer->user->name ?? 'غير محدد' }}</td>
+        <td>
+            <ul class="mb-0">
+                @foreach($order->items as $item)
+                    @if($item->product)
+                        <li>{{ $item->product->title }} ({{ $item->quantity }})</li>
+                    @endif
+                @endforeach
+            </ul>
+        </td>
+        <td>
+            {{ $order->items->sum('quantity') }}
+        </td>
+        <td>
+            {{ $order->items->sum('total_price') }}
+        </td>
+        <td>
+            @switch($order->status)
+                @case('pending') <span class="badge text-bg-warning">قيد الانتظار</span> @break
+                @case('processing') <span class="badge text-bg-info">جارٍ التنفيذ</span> @break
+                @case('shipped') <span class="badge text-bg-primary">تم الشحن</span> @break
+                @case('delivered') <span class="badge text-bg-success">مكتمل</span> @break
+                @case('cancelled') <span class="badge text-bg-danger">ملغى</span> @break
+            @endswitch
+        </td>
+        <td>
+            @switch($order->payment_status)
+                @case('pending') <span class="badge text-bg-warning">غير مدفوع</span> @break
+                @case('paid') <span class="badge text-bg-success">مدفوع</span> @break
+                @case('failed') <span class="badge text-bg-danger">فشل الدفع</span> @break
+                @case('refunded') <span class="badge text-bg-secondary">تم استرداده</span> @break
+            @endswitch
+        </td>
+        <td>{{ $order->created_at->format('Y-m-d') }}</td>
+        <td>
+            <a href="{{ route('seller.orders.show', $order->order_id) }}" 
+               class="theme-btn theme-btn-small me-2" title="عرض">
+                <i class="la la-eye"></i>
+            </a>
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="9" class="text-center">لا توجد طلبات حالياً</td>
+    </tr>
+@endforelse
 
-                                                    @case('processing')
-                                                        <span class="badge text-bg-info">جارٍ التنفيذ</span>
-                                                    @break
-
-                                                    @case('shipped')
-                                                        <span class="badge text-bg-primary">تم الشحن</span>
-                                                    @break
-
-                                                    @case('delivered')
-                                                        <span class="badge text-bg-success">مكتمل</span>
-                                                    @break
-
-                                                    @case('cancelled')
-                                                        <span class="badge text-bg-danger">ملغى</span>
-                                                    @break
-                                                @endswitch
-                                            </td>
-                                            <td>
-                                                @switch($order->payment_status)
-                                                    @case('pending')
-                                                        <span class="badge text-bg-warning">غير مدفوع</span>
-                                                    @break
-
-                                                    @case('paid')
-                                                        <span class="badge text-bg-success">مدفوع</span>
-                                                    @break
-
-                                                    @case('failed')
-                                                        <span class="badge text-bg-danger">فشل الدفع</span>
-                                                    @break
-
-                                                    @case('refunded')
-                                                        <span class="badge text-bg-secondary">تم استرداده</span>
-                                                    @break
-                                                @endswitch
-                                            </td>
-                                            <td>{{ $order->created_at->format('Y-m-d') }}</td>
-                                            <td>
-                                                <a href="{{ route('seller.orders.show', $order->order_id) }}"
-                                                    class="theme-btn theme-btn-small me-2" title="عرض">
-                                                    <i class="la la-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endif
-                                    @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center">لا توجد منتجات لهذا الطلب في متجرك</td>
-                                        </tr>
-                                    @endforelse
-                                    @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center">لا توجد طلبات حالياً</td>
-                                        </tr>
-                                    @endforelse
                                 </tbody>
                             </table>
 

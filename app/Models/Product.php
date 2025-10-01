@@ -58,4 +58,9 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class, 'product_id');
     }
+    public function primaryImage()
+{
+    return $this->hasOne(ProductImage::class, 'product_id')->where('is_primary', true);
+}
+
 }

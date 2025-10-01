@@ -31,6 +31,25 @@ class HomeController extends Controller
             $query->where('status', 'active');
         }])->get();
 
-        return view('frontend.home.index', compact('categories', 'featuredProducts', 'allProducts','stores'));
+        // المتاجر المميزة للعرض في القسم الجديد
+        $featuredStores = Store::with(['user', 'products', 'addresses'])
+            ->where('status', 'active')
+            ->whereHas('products', function($query) {
+                $query->where('status', 'active');
+            })
+            ->withCount(['products' => function($query) {
+                $query->where('status', 'active');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->take(6)
+            ->get();
+
+        return view('frontend.home.index', compact(
+            'categories', 
+            'featuredProducts', 
+            'allProducts',
+            'stores',
+            'featuredStores'
+        ));
     }
 }

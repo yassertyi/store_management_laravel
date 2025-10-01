@@ -41,4 +41,11 @@ class Review extends Model
         return $this->belongsTo(OrderItem::class, 'order_id', 'order_id')
                     ->where('product_id', $this->product_id);
     }
+    // Add this relationship
+    public function helpfuls()
+    {
+        return $this->hasMany(ReviewHelpful::class, 'review_id');
+    }
+
+    
 }

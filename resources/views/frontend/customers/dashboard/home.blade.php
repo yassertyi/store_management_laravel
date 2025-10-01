@@ -157,7 +157,7 @@
         <div class="form-box dashboard-card">
             <div class="form-title-wrap">
                 <h3 class="title">المنتجات التي شاهدتها مؤخراً</h3>
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-primary">تصفح المزيد</a>
+                <a href="{{ route('front.home') }}" class="btn btn-sm btn-outline-primary">تصفح المزيد</a>
             </div>
             <div class="form-content">
                 <div class="row">

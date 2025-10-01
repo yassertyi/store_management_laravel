@@ -28,6 +28,7 @@ use App\Http\Controllers\Customer\CustomerOrderController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\SupportController;
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Seller\ProfileController;
 use App\Http\Controllers\Seller\StoreSettingsController;
 use App\Http\Middleware\CheckUserType;
@@ -41,17 +42,49 @@ use App\Http\Middleware\CheckUserType;
 Route::prefix('/')->name('front.')->group(function () {
     // الصفحة الرئيسية
     Route::get('/', [HomeController::class, 'index'])->name('home');
-
-    // صفحة السلة
-    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-
-    // صفحة المنتجات
-    Route::get('/products', [App\Http\Controllers\Front\ProductController::class, 'index'])->name('products.index');
-Route::post('/wishlist/add', [App\Http\Controllers\Front\ProductController::class, 'addToWishlist'])->name('wishlist.add');
-Route::post('/wishlist/remove', [App\Http\Controllers\Front\ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
-Route::get('/wishlist/check/{productId}', [App\Http\Controllers\Front\ProductController::class, 'checkWishlistStatus'])->name('wishlist.check');
     
+    // صفحة السلة
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add', [CartController::class, 'addToCart'])->name('add');
+        Route::put('/update', [CartController::class, 'updateCart'])->name('update');
+        Route::delete('/remove', [CartController::class, 'removeFromCart'])->name('remove');
+        Route::delete('/clear', [CartController::class, 'clearCart'])->name('clear');
+        Route::delete('/clear-store/{storeId}', [CartController::class, 'clearStoreCart'])->name('clear.store');
+        Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+        Route::get('/summary', [CartController::class, 'getCartSummary'])->name('summary');
+    });
+
+    // صفحة المنتجات والتقييمات
+    Route::get('/products', [App\Http\Controllers\Front\ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{product}', [App\Http\Controllers\Front\ProductController::class, 'show'])->name('products.show');
+    
+    // تقييمات المنتجات
+    Route::post('/products/{product}/review', [App\Http\Controllers\Front\ProductController::class, 'storeReview'])->name('products.review.store');
+Route::post('/review/{review}/helpful', [App\Http\Controllers\Front\ProductController::class, 'toggleHelpful'])->name('front.review.helpful');    
+    // المفضلة
+    Route::post('/wishlist/add', [App\Http\Controllers\Front\ProductController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::post('/wishlist/remove', [App\Http\Controllers\Front\ProductController::class, 'removeFromWishlist'])->name('wishlist.remove');
+    Route::get('/wishlist/check/{productId}', [App\Http\Controllers\Front\ProductController::class, 'checkWishlistStatus'])->name('wishlist.check');
+
+    // صفحة اتمام الشراء
+    Route::prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        Route::get('/store/{storeId}', [CheckoutController::class, 'storeCheckout'])->name('store');
+        Route::post('/process', [CheckoutController::class, 'processCheckout'])->name('process');
+        Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
+        Route::get('/failed', [CheckoutController::class, 'failed'])->name('failed');
+        Route::post('/validate-coupon', [CheckoutController::class, 'validateCoupon'])->name('validateCoupon');
+        Route::get('/debug/coupons', [CheckoutController::class, 'debugCoupons']);
+    });
+
+    Route::prefix('stores')->name('stores.')->group(function () {
+        Route::get('/{store}', [App\Http\Controllers\Front\StoreController::class, 'show'])->name('show');
+        Route::get('/{store}/products', [App\Http\Controllers\Front\StoreController::class, 'products'])->name('products');
+Route::get('/', [App\Http\Controllers\Front\StoreController::class, 'index'])->name('all');
+    });
 });
+
 
 
 

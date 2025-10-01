@@ -37,4 +37,5 @@ class Payment extends Model
     {
         return $this->belongsTo(StorePaymentMethod::class, 'store_payment_method_id', 'spm_id');
     }
+    
 }

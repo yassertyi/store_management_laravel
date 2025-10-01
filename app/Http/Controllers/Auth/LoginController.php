@@ -47,6 +47,6 @@ public function login(Request $request)
     public function logout(Request $request)
     {
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('front.home');
     }
 }

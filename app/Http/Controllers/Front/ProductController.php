@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Review;
 use App\Models\Store;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -21,9 +23,9 @@ class ProductController extends Controller
         // البحث بالنص
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -47,7 +49,7 @@ class ProductController extends Controller
                     $query->whereNotNull('compare_price');
                     break;
                 case 'bestseller':
-                    $query->whereHas('reviews', function($q) {
+                    $query->whereHas('reviews', function ($q) {
                         $q->havingRaw('AVG(rating) >= ?', [4.5]);
                     });
                     break;
@@ -76,12 +78,12 @@ class ProductController extends Controller
 
         // الحصول على المنتجات مع التقسيم
         $products = $query->paginate(12);
-        
+
         // جميع الفئات للفلترة
         $categories = Category::all();
-        
+
         // جميع المتاجر للفلترة
-        $stores = Store::withCount(['products' => function($query) {
+        $stores = Store::withCount(['products' => function ($query) {
             $query->where('status', 'active');
         }])->get();
 
@@ -132,7 +134,6 @@ class ProductController extends Controller
                 'success' => true,
                 'message' => 'تمت إضافة المنتج إلى المفضلة'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -162,7 +163,7 @@ class ProductController extends Controller
 
             if ($wishlist) {
                 $wishlist->delete();
-                
+
                 return response()->json([
                     'success' => true,
                     'message' => 'تمت إزالة المنتج من المفضلة'
@@ -173,7 +174,6 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'المنتج غير موجود في المفضلة'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -199,4 +199,182 @@ class ProductController extends Controller
             'in_wishlist' => $inWishlist
         ]);
     }
+
+    public function show($id)
+    {
+        $product = Product::with([
+            'category',
+            'store',
+            'primaryImage',
+            'images',
+            'variants',
+            'reviews.user',
+            'reviews.helpfuls'
+        ])->findOrFail($id);
+
+        $mainImage = $product->primaryImage ?? $product->images->first();
+        $otherImages = $product->images->where('image_id', '!=', $mainImage->image_id);
+
+        // التحقق من وجود المنتج في المفضلة
+        $inWishlist = false;
+        if (Auth::check()) {
+            $inWishlist = Wishlist::where('user_id', Auth::id())
+                ->where('product_id', $id)
+                ->exists();
+        }
+
+        // حساب متوسط التقييم
+        $averageRating = $product->reviews->avg('rating') ?? 0;
+        $totalReviews = $product->reviews->count();
+
+        // توزيع التقييمات
+        $ratingDistribution = [
+            5 => $product->reviews->where('rating', 5)->count(),
+            4 => $product->reviews->where('rating', 4)->count(),
+            3 => $product->reviews->where('rating', 3)->count(),
+            2 => $product->reviews->where('rating', 2)->count(),
+            1 => $product->reviews->where('rating', 1)->count(),
+        ];
+
+        // منتجات مشابهة
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('product_id', '!=', $id)
+            ->where('status', 'active')
+            ->with('images')
+            ->take(4)
+            ->get();
+
+        return view('frontend.home.products.show', compact(
+            'product',
+            'mainImage',
+            'otherImages',
+            'inWishlist',
+            'averageRating',
+            'totalReviews',
+            'ratingDistribution',
+            'relatedProducts'
+        ));
+    }
+
+    public function storeReview(Request $request, $productId)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يجب تسجيل الدخول أولاً'
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'rating' => 'required|integer|between:1,5',
+            'title' => 'required|string|max:255',
+            'comment' => 'required|string|min:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'البيانات غير صالحة',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // التحقق من أن المستخدم قد طلب هذا المنتج
+            $hasPurchased = Auth::user()->orders()
+                ->whereHas('orderItems', function ($query) use ($productId) {
+                    $query->where('product_id', $productId);
+                })
+                ->exists();
+
+            if (!$hasPurchased) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب شراء المنتج أولاً قبل إضافة التقييم'
+                ], 403);
+            }
+
+            // التحقق من عدم وجود تقييم سابق
+            $existingReview = Review::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->first();
+
+            if ($existingReview) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لقد قمت بتقييم هذا المنتج مسبقاً'
+                ], 409);
+            }
+
+            $review = Review::create([
+                'product_id' => $productId,
+                'user_id' => Auth::id(),
+                'rating' => $request->rating,
+                'title' => $request->title,
+                'comment' => $request->comment,
+                'is_approved' => true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم إضافة التقييم بنجاح',
+                'review' => $review->load('user')
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Review creation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء إضافة التقييم'
+            ], 500);
+        }
+    }
+
+    public function toggleHelpful(Request $request, $reviewId)
+{
+    if (!Auth::check()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'يجب تسجيل الدخول أولاً'
+        ], 401);
+    }
+
+    try {
+        $review = Review::findOrFail($reviewId);
+
+        $existingHelpful = $review->helpfuls()
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($existingHelpful) {
+            $existingHelpful->delete();
+            $isHelpful = false;
+            $message = 'تم إزالة التفضيل';
+        } else {
+            $review->helpfuls()->create([
+                'user_id' => Auth::id(),
+                'is_helpful' => true
+            ]);
+            $isHelpful = true;
+            $message = 'شكراً لك! تم تسجيل تفضيلك';
+        }
+
+        $helpfulCount = $review->helpfuls()->count();
+
+        return response()->json([
+            'success' => true,
+            'is_helpful' => $isHelpful,
+            'helpful_count' => $helpfulCount,
+            'message' => $message
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Toggle helpful error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'حدث خطأ أثناء التحديث'
+        ], 500);
+    }
+}
+
 }

@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{{ asset('static/css/flag-icon.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('static/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('static/css/style-rtl.css') }}" />
+        <link rel="stylesheet" href="{{ asset('static/css/home.css') }}" />
+    <link rel="stylesheet" href="{{ asset('static/css/prodect.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('style')
 </head>

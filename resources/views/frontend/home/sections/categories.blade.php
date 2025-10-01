@@ -14,14 +14,17 @@
                 <div class="category-carousel carousel-action">
                     @foreach($categories as $category)
                         <div class="category-item text-center">
-                            <div class="category-img">
-                                <img src="{{ $category->image ? asset('storage/' . $category->image) : 'https://via.placeholder.com/500x300' }}" 
-                                     alt="{{ $category->name }}" />
-                            </div>
-                            <div class="category-content">
-                                <h3 class="category__title">{{ $category->name }}</h3>
-                                <p class="category__meta">{{ $category->products_count }} منتج</p>
-                            </div>
+                            <a href="{{ route('front.products.index', ['category_id' => $category->category_id]) }}" 
+                               class="category-link">
+                                <div class="category-img">
+                                    <img src="{{ $category->image ? asset('storage/' . $category->image) : 'https://via.placeholder.com/500x300' }}" 
+                                         alt="{{ $category->name }}" />
+                                </div>
+                                <div class="category-content">
+                                    <h3 class="category__title">{{ $category->name }}</h3>
+                                    <p class="category__meta">{{ $category->products_count ?? 0 }} منتج</p>
+                                </div>
+                            </a>
                         </div>
                     @endforeach
                 </div>
