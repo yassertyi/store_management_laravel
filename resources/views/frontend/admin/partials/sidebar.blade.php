@@ -55,7 +55,7 @@
                             <a href="{{ route('admin.seller-requests.index') }}">طلبات فتح حساب متجر</a>
                         </li>
                         <li class="{{ request()->is('admin/user-activities') ? 'page-active' : '' }}">
-                            <a href="">نشاطات المستخدمين</a>
+                            <a href="{{ route('admin.user-activities.index') }}">نشاطات المستخدمين</a>
                         </li>
                     </ul>
                 </li>
@@ -81,9 +81,7 @@
                         <li class="{{ request()->is('admin/store-addresses') ? 'page-active' : '' }}">
                             <a href="{{ route('admin.store.addresses') }}">عناوين المتاجر</a>
                         </li>
-                        <li class="{{ request()->is('admin/seller-requests') ? 'page-active' : '' }}">
-                            <a href="">طلبات البائعين</a>
-                        </li>
+                        
                     </ul>
                 </li>
 
@@ -280,6 +278,39 @@
                 <li class="{{ request()->is('admin/settings*') ? 'page-active' : '' }}">
                     <a href="{{ route('admin.profile.edit') }}"><i
                             class="la la-cog me-2 text-color-9"></i>الإعدادات</a>
+                </li>
+                <!-- إدارة المحتوى الديناميكي -->
+                <li class="{{ request()->is('admin/content*') || request()->is('admin/settings*') || request()->is('admin/brands*') || request()->is('admin/testimonials*') || request()->is('admin/footer*') || request()->is('admin/social*') ? 'page-active' : '' }}">
+                    <span class="side-menu-icon toggle-menu-icon">
+                        <i class="la la-angle-down"></i>
+                    </span>
+                    <a href="#"><i class="la la-globe me-2 text-color-3"></i>إدارة المحتوى</a>
+                    <ul class="toggle-drop-menu">
+                        <!-- الإعدادات العامة -->
+                        <li class="{{ request()->is('admin/settings*') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.content.settings.index') }}"><i class="la la-cog me-2"></i>الإعدادات العامة</a>
+                        </li>
+                        
+                        <!-- العلامات التجارية -->
+                        <li class="{{ request()->is('admin/brands*') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.content.brands.index') }}"><i class="la la-tags me-2"></i>العلامات التجارية</a>
+                        </li>
+                        
+                        <!-- آراء العملاء -->
+                        <li class="{{ request()->is('admin/testimonials*') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.content.testimonials.index') }}"><i class="la la-comments me-2"></i>آراء العملاء</a>
+                        </li>
+                        
+                        <!-- روابط الفوتر -->
+                        <li class="{{ request()->is('admin/footer-links*') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.content.footer-links.index') }}"><i class="la la-link me-2"></i>روابط الفوتر</a>
+                        </li>
+                        
+                        <!-- وسائل التواصل -->
+                        <li class="{{ request()->is('admin/social-media*') ? 'page-active' : '' }}">
+                            <a href="{{ route('admin.content.social-media.index') }}"><i class="la la-share-alt me-2"></i>وسائل التواصل</a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- تسجيل الخروج -->

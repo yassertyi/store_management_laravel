@@ -10,10 +10,10 @@
                         <div class="header-left">
                             <ul class="list-items">
                                 <li>
-                                    <a href="#"><i class="la la-phone me-1"></i>(123) 123-456</a>
+                                    <a href="#"><i class="la la-phone me-1"></i>{{ $settings['header_phone'] }}</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="la la-envelope me-1"></i>info@mystore.com</a>
+                                    <a href="#"><i class="la la-envelope me-1"></i>{{ $settings['header_email'] }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -22,8 +22,6 @@
                 <div class="col-lg-6">
                     <div class="header-top-content">
                         <div class="header-right d-flex align-items-center justify-content-end">
-
-
                             @guest
                                 {{-- إذا لم يكن مسجل دخول --}}
                                 <div class="header-right-action">
@@ -50,8 +48,9 @@
                     <div class="menu-wrapper">
                         <a href="#" class="down-button"><i class="la la-angle-down"></i></a>
                         <div class="logo">
-                            <a href="{{ route('front.home') }}"><img src="{{ asset('static/images/logo.png') }}"
-                                    alt="logo" /></a>
+                            <a href="{{ route('front.home') }}">
+                                <img src="{{ asset('static/images/Newfolder/aaaa.png') }}" alt="logo" />
+                            </a>
                             <div class="menu-toggler">
                                 <i class="la la-bars"></i>
                                 <i class="la la-times"></i>
@@ -75,24 +74,23 @@
                                             <ul class="row no-gutters">
                                                 <li class="col-lg-3 mega-menu-item">
                                                     <ul>
-                                                        <li><a href="about.html">عن المتجر</a></li>
-                                                        <li><a href="contact.html">اتصل بنا</a></li>
-                                                        <li><a href="faq.html">الأسئلة الشائعة</a></li>
-                                                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                                                        @foreach($informationLinks as $link)
+                                                            <li><a href="{{ $link->url }}">{{ $link->title }}</a></li>
+                                                        @endforeach
                                                     </ul>
                                                 </li>
                                                 <li class="col-lg-3 mega-menu-item">
                                                     <ul>
-                                                        <li><a href="user-dashboard.html">لوحة تحكم المستخدم</a></li>
-                                                        <li><a href="cart.html">عربة التسوق</a></li>
-                                                        <li><a href="checkout.html">الدفع</a></li>
-                                                        <li><a href="track-order.html">تتبع الطلب</a></li>
+                                                        @foreach($storeLinks as $link)
+                                                            <li><a href="{{ $link->url }}">{{ $link->title }}</a></li>
+                                                        @endforeach
                                                     </ul>
                                                 </li>
                                                 <li class="col-lg-3 mega-menu-item">
                                                     <ul>
-                                                        <li><a href="blog-grid.html">المدونة</a></li>
-                                                        <li><a href="blog-single.html">تفاصيل المدونة</a></li>
+                                                        @foreach($customerServiceLinks as $link)
+                                                            <li><a href="{{ $link->url }}">{{ $link->title }}</a></li>
+                                                        @endforeach
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -107,7 +105,6 @@
                                 </ul>
                             </nav>
                         </div>
-
 
                         @auth
                             <a href="{{ route('front.cart.index') }}" class="nav-cart position-relative">
@@ -150,19 +147,91 @@
             </div>
         </div>
     </div>
-
-    <!-- إضافة CSS لتغيير لون أيقونة الإشعارات في هذه الصفحة فقط -->
-    <style>
-        .page-specific-header .header-right .la-bell {
-            color: rgb(64, 0, 255);
-            /* غيّر اللون كما تريد */
-        }
-    </style>
-
 </header>
 <!-- ================================
      END HEADER AREA
 ================================= -->
+<!-- ================================
+     END HEADER AREA
+================================= -->
+<style>
+    /* تصميم العلامات التجارية */
+    .brands-carousel {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .brand-item {
+        flex: 0 0 calc(16.666% - 30px);
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .brand-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .brand-item img {
+        max-width: 100%;
+        height: 60px;
+        object-fit: contain;
+    }
+
+    .brand-placeholder {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 8px;
+        font-weight: bold;
+        color: #6c757d;
+    }
+
+    /* تصميم آراء العملاء */
+    .author-placeholder {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 20px;
+    }
+
+    .testimonial-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin: 10px;
+    }
+
+    /* تصميم متجاوب */
+    @media (max-width: 768px) {
+        .brand-item {
+            flex: 0 0 calc(33.333% - 20px);
+        }
+        
+        .testimonial-card {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .brand-item {
+            flex: 0 0 calc(50% - 20px);
+        }
+    }
+</style>
 <style>
     .nav-cart {
         display: flex;

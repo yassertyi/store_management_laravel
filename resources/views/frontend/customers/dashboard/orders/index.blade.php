@@ -195,7 +195,7 @@
                 <i class="la la-shopping-cart la-3x text-muted mb-3"></i>
                 <h5 class="text-muted">لا توجد طلبات حالياً</h5>
                 <p class="text-muted">لم تقم بأي طلبات حتى الآن</p>
-                <a href="{{ route('home') }}" class="theme-btn theme-btn-small">
+                <a href="{{ route('front.home') }}" class="theme-btn theme-btn-small">
                     <i class="la la-shopping-bag"></i> متابعة التسوق
                 </a>
             </div>

@@ -11,11 +11,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="logo-section">
-                        <h2 class="company-name">متجرك الإلكتروني</h2>
+                        @if($store->logo)
+                            <img src="{{ asset('static/images/stors/' . $store->logo) }}" alt="{{ $store->store_name }}" class="store-logo mb-3" style="max-height: 80px;">
+                        @endif
+                        <h2 class="company-name">{{ $store->store_name }}</h2>
                         <p class="company-address">
-                            العنوان: مدينة الرياض، المملكة العربية السعودية<br>
-                            الهاتف: +966 12 345 6789<br>
-                            البريد الإلكتروني: info@yourstore.com
+                            @if($store->addresses->where('is_primary', true)->first())
+                                @php $primaryAddress = $store->addresses->where('is_primary', true)->first(); @endphp
+                                العنوان: {{ $primaryAddress->street }}, {{ $primaryAddress->city }}, {{ $primaryAddress->country }}<br>
+                            @endif
+                            @if($store->phones->where('is_primary', true)->first())
+                                @php $primaryPhone = $store->phones->where('is_primary', true)->first(); @endphp
+                                الهاتف: {{ $primaryPhone->phone }}<br>
+                            @endif
+                            البريد الإلكتروني: {{ Auth::user()->email }}
                         </p>
                     </div>
                 </div>
@@ -24,6 +33,7 @@
                         <h1 class="invoice-title">فاتورة دفع</h1>
                         <p class="invoice-number">رقم الفاتورة: <strong>{{ $payment->payment_id }}</strong></p>
                         <p class="invoice-date">تاريخ الفاتورة: {{ \Carbon\Carbon::parse($payment->created_at)->format('d/m/Y') }}</p>
+                        <p class="invoice-time">وقت الفاتورة: {{ \Carbon\Carbon::parse($payment->created_at)->format('h:i A') }}</p>
                     </div>
                 </div>
             </div>
@@ -35,12 +45,22 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="info-card">
-                    <h5>معلومات الدفع</h5>
+                    <h5><i class="fas fa-money-bill-wave me-2"></i>معلومات الدفع</h5>
                     <p><strong>رقم الدفع:</strong> {{ $payment->payment_id }}</p>
                     <p><strong>رقم الطلب:</strong> {{ $payment->order->order_number ?? 'غير محدد' }}</p>
-                    <p><strong>طريقة الدفع:</strong> {{ $payment->storePaymentMethod->account_name ?? $payment->method }}</p>
+                    <p><strong>طريقة الدفع:</strong> 
+                        @if($payment->storePaymentMethod)
+                            {{ $payment->storePaymentMethod->paymentOption->method_name }}
+                        @else
+                            {{ $payment->method }}
+                        @endif
+                    </p>
                     <p><strong>معرف المعاملة:</strong> {{ $payment->transaction_id ?? 'غير متوفر' }}</p>
-                    <p><strong>نوع الدفع:</strong> {{ $payment->type == 'online' ? 'إلكتروني' : 'نقدي' }}</p>
+                    <p><strong>نوع الدفع:</strong> 
+                        <span class="badge bg-{{ $payment->type == 'online' ? 'primary' : 'success' }}">
+                            {{ $payment->type == 'online' ? 'إلكتروني' : 'نقدي' }}
+                        </span>
+                    </p>
                     <p><strong>حالة الدفع:</strong> 
                         <span class="status-badge status-{{ $payment->status }}">
                             @if($payment->status == 'completed')
@@ -61,21 +81,78 @@
             </div>
             <div class="col-md-6">
                 <div class="info-card">
-                    <h5>معلومات العميل</h5>
+                    <h5><i class="fas fa-user me-2"></i>معلومات العميل</h5>
                     @if($payment->order && $payment->order->customer)
-                        <p><strong>اسم العميل:</strong> {{ $payment->order->customer->name }}</p>
-                        <p><strong>البريد الإلكتروني:</strong> {{ $payment->order->customer->email }}</p>
-                        <p><strong>الهاتف:</strong> {{ $payment->order->customer->phone }}</p>
+                        <p><strong>اسم العميل:</strong> {{ $payment->order->customer->user->name }}</p>
+                        <p><strong>البريد الإلكتروني:</strong> {{ $payment->order->customer->user->email }}</p>
+                        <p><strong>الهاتف:</strong> {{ $payment->order->customer->user->phone ?? 'غير متوفر' }}</p>
+                        
+                        @if($payment->order->orderAddresses->where('address_type', 'shipping')->first())
+                            @php $shippingAddress = $payment->order->orderAddresses->where('address_type', 'shipping')->first(); @endphp
+                            <p><strong>عنوان الشحن:</strong><br>
+                                {{ $shippingAddress->street }}, {{ $shippingAddress->city }}, {{ $shippingAddress->country }}
+                            </p>
+                        @endif
                     @else
-                        <p>معلومات العميل غير متوفرة</p>
+                        <p class="text-muted">معلومات العميل غير متوفرة</p>
                     @endif
                 </div>
+            </div>
+        </div>
+<!-- تفاصيل الطلب -->
+        <div class="order-details mt-4">
+            <h5><i class="fas fa-shopping-bag me-2"></i>تفاصيل الطلب</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-head">
+                        <tr>
+                            <th>#</th>
+                            <th>المنتج</th>
+                            <th>الكمية</th>
+                            <th>سعر الوحدة</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($payment->order->orderItems as $index => $item)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if($item->product->images->where('is_primary', true)->first())
+                                        <img src="{{ asset($item->product->images->where('is_primary', true)->first()->image_path) }}" 
+                                             alt="{{ $item->product->title }}" 
+                                             class="product-thumb me-3" 
+                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                    @endif
+                                    <div>
+                                        <strong>{{ $item->product->title }}</strong>
+                                        @if($item->variant_id)
+                                        <br><small class="text-muted">النوع: {{ $item->variant->name ?? 'غير محدد' }}</small>
+                                        @endif
+                                        <br><small class="text-muted">SKU: {{ $item->product->sku }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ $item->quantity }}</td>
+                            <td>{{ number_format($item->unit_price, 2) }} {{ $payment->currency }}</td>
+                            <td>{{ number_format($item->total_price, 2) }} {{ $payment->currency }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end"><strong>المجموع:</strong></td>
+                            <td><strong>{{ number_format($payment->order->orderItems->sum('total_price'), 2) }} {{ $payment->currency }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
 
         <!-- تفاصيل المبلغ -->
         <div class="amount-details mt-4">
-            <h5>تفاصيل المبلغ</h5>
+            <h5><i class="fas fa-calculator me-2"></i>تفاصيل المبلغ</h5>
             <div class="row">
                 <div class="col-md-8 offset-md-2">
                     <table class="table amount-table">
@@ -104,43 +181,11 @@
             </div>
         </div>
 
-        <!-- تفاصيل الطلب -->
-        <div class="order-details mt-4">
-            <h5>تفاصيل الطلب</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-head">
-                        <tr>
-                            <th>#</th>
-                            <th>المنتج</th>
-                            <th>الكمية</th>
-                            <th>سعر الوحدة</th>
-                            <th>الإجمالي</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($payment->order->orderItems as $index => $item)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->product->title }}
-                                @if($item->variant_id)
-                                <br><small>النوع: {{ $item->variant->name ?? 'غير محدد' }}</small>
-                                @endif
-                            </td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>{{ number_format($item->unit_price, 2) }} {{ $payment->currency }}</td>
-                            <td>{{ number_format($item->total_price, 2) }} {{ $payment->currency }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
+        
         <!-- ملاحظات -->
         @if($payment->note)
         <div class="notes-section mt-4">
-            <h5>ملاحظات</h5>
+            <h5><i class="fas fa-sticky-note me-2"></i>ملاحظات</h5>
             <div class="notes-content">
                 <p>{{ $payment->note }}</p>
             </div>
@@ -152,26 +197,30 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="footer-section">
-                        <h6>شروط الدفع</h6>
+                        <h6><i class="fas fa-file-invoice-dollar me-2"></i>شروط الدفع</h6>
                         <p>يجب سداد الفاتورة خلال 30 يوم من تاريخ الاصدار</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="footer-section">
-                        <h6>شكراً لتعاملكم معنا</h6>
+                        <h6><i class="fas fa-heart me-2"></i>شكراً لتعاملكم معنا</h6>
                         <p>نأمل أن تكون تجربة التسوق لدينا مرضية</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <div class="footer-section">
-                        <h6>تواصل معنا</h6>
-                        <p>الدعم الفني: support@yourstore.com</p>
-                        <p>المبيعات: sales@yourstore.com</p>
+                        <h6><i class="fas fa-headset me-2"></i>تواصل معنا</h6>
+                        <p>الدعم الفني: {{ Auth::user()->email }}</p>
+                        @if($store->phones->where('is_primary', true)->first())
+                            <p>الهاتف: {{ $store->phones->where('is_primary', true)->first()->phone }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
             <hr>
-            <p class="text-center copyright">© {{ date('Y') }} متجرك الإلكتروني. جميع الحقوق محفوظة.</p>
+            <p class="text-center copyright">
+                © {{ date('Y') }} {{ $store->store_name }}. جميع الحقوق محفوظة.
+            </p>
         </div>
 
         <!-- أزرار الإجراءات -->
@@ -179,9 +228,6 @@
             <button class="btn btn-primary" onclick="window.print()">
                 <i class="fas fa-print"></i> طباعة الفاتورة
             </button>
-            <a href="" class="btn btn-success">
-                <i class="fas fa-download"></i> تحميل الفاتورة
-            </a>
             <a href="{{ route('seller.payments.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-right"></i> العودة إلى المدفوعات
             </a>
@@ -202,6 +248,11 @@
     margin-bottom: 20px;
 }
 
+.store-logo {
+    max-height: 80px;
+    border-radius: 8px;
+}
+
 .invoice-title {
     color: #2c3e50;
     font-weight: 700;
@@ -213,8 +264,9 @@
     margin-bottom: 5px;
 }
 
-.invoice-date {
+.invoice-date, .invoice-time {
     color: #7f8c8d;
+    margin-bottom: 3px;
 }
 
 .invoice-divider {
@@ -227,6 +279,7 @@
     border-radius: 8px;
     padding: 20px;
     height: 100%;
+    border-left: 4px solid #2c3e50;
 }
 
 .info-card h5 {
@@ -248,11 +301,17 @@
 .total-row {
     border-top: 2px solid #dee2e6 !important;
     font-size: 16px;
+    background-color: #f8f9fa;
 }
 
 .table-head {
     background-color: #2c3e50;
     color: white;
+}
+
+.product-thumb {
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
 }
 
 .status-badge {
@@ -313,6 +372,11 @@
     flex-wrap: wrap;
 }
 
+.badge {
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
 @media print {
     .action-buttons {
         display: none;
@@ -321,6 +385,10 @@
     .invoice-container {
         box-shadow: none;
         padding: 0;
+    }
+    
+    body {
+        background: white !important;
     }
 }
 
@@ -337,5 +405,10 @@
         margin-bottom: 10px;
         width: 100%;
     }
+    
+    .info-card {
+        margin-bottom: 15px;
+    }
 }
-</style>@endsection
+</style>
+@endsection

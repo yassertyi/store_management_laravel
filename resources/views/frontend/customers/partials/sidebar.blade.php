@@ -36,6 +36,14 @@
                     <a href="{{ route('customer.orders.index') }}"><i
                             class="la la-shopping-cart me-2 text-color"></i>طلباتي</a>
                 </li>
+                <!-- المدفوعات الخاصة بالعميل -->
+                <li class="{{ request()->is('customer/payments*') ? 'page-active' : '' }}">
+
+                    <a href="{{ route('customer.payments.index') }}">
+                        <i class="la la-credit-card me-2 text-color-6"></i>الفواتير
+                    </a>
+                   
+                </li>
 
                 <!-- العناوين -->
                 <li class="{{ request()->is('customer/addresses*') ? 'page-active' : '' }}">

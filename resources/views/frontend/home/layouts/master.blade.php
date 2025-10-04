@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>@yield('title', 'متجرنا - المتجر الإلكتروني الرائد')</title>
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('static/images/favicon.png') }}" />
+    <link rel="icon" href="{{ asset('static/images/Newfolder/aa.png') }}" />
 
     <!-- Google Fonts -->
     <link

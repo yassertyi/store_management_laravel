@@ -33,7 +33,7 @@
     @elseif(auth()->user()->user_type == 2)
         {{ route('admin.notifications.index') }}
     @else
-        {{ route('home') }}
+        {{ route('front.home') }}
     @endif
 " class="dropdown-item drop-reveal-btn text-center">
     مشاهدة الكل

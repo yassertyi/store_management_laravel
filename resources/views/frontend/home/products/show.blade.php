@@ -594,8 +594,8 @@
                                 <div class="card-img">
                                     <a href="{{ route('front.products.show', $relatedProduct->product_id) }}"
                                         class="d-block">
-                                        <img src="{{ $relatedProduct->images->first()?->image_path ?? '/images/placeholder.jpg' }}"
-                                            alt="product-img">
+                                        <img src="{{ $relatedProduct->images->first() ? asset($relatedProduct->images->first()->image_path) : '/images/placeholder.jpg' }}" alt="product-img">
+
                                     </a>
                                     @if ($relatedProduct->is_featured)
                                         <span class="badge">متميز</span>

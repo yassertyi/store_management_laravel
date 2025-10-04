@@ -4,7 +4,7 @@
             <div class="col-lg-12">
                 <div class="menu-wrapper">
                     <div class="logo me-5">
-                        <a href="{{ url('/') }}"><img src="{{ asset('static/images/logo2.png') }}" alt="logo" /></a>
+                        <a href="{{ url('/') }}"><img src="{{ asset('static/images/Newfolder/aaaa.png') }}" alt="logo" /></a>
                         <div class="menu-toggler">
                             <i class="la la-bars"></i>
                             <i class="la la-times"></i>

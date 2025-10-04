@@ -13,29 +13,6 @@
 
 @section('content')
 
-    <!-- القائمة -->
-    <div class="main-menu-content">
-        <nav>
-            <ul>
-                <li>
-                    <a href="{{ route('front.home') }}">الصفحة الرئيسية</a>
-                </li>
-                <li>
-                    <a href="#categories">الفئات</a>
-                </li>
-                <li>
-                    <a href="#featured-products">منتجات مميزة</a>
-                </li>
-                <li>
-                    <a href="#offers">العروض</a>
-                </li>
-                <li>
-                    <a href="#stores">المتاجر</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
     <!-- الأقسام -->
     <section id="hero">
         @include('frontend.home.sections.hero')

@@ -73,4 +73,19 @@ public function orderAddresses()
 {
     return $this->hasMany(OrderAddress::class, 'order_id');
 }
+
+
+// أو طريقة أبسط إذا كان كل الطلب من متجر واحد
+public function store()
+{
+    // الحصول على المتجر من أول منتج في الطلب
+    return $this->hasOneThrough(
+        Store::class,
+        OrderItem::class,
+        'order_id',
+        'store_id',
+        'order_id',
+        'product_id'
+    )->distinct();
+}
 }

@@ -7,7 +7,12 @@ use App\Http\Middleware\CheckUserType; // ✅ استدعاء الميدل وير
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
+        web:[
+            __DIR__.'/../routes/web.php',
+            __DIR__.'/../routes/admin.php',
+            __DIR__.'/../routes/seller.php',
+            __DIR__.'/../routes/customer.php',
+        ] ,
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )

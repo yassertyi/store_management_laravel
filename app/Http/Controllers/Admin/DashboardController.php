@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller; 
 use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Auth; 
-use App\Models\User; use App\Models\Notification; 
-use App\Models\Order; use App\Models\Product; 
-use App\Models\Category; use DB;
+use App\Models\User; 
+use App\Models\Notification; 
+use App\Models\Order; 
+use App\Models\Product; 
+use DB;
+
 class DashboardController extends Controller
 {
     /**
@@ -15,7 +18,7 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
-        // يمكنك إضافة middleware للتحقق من الصلاحيات لاحقاً
+        // تقدر تضيف middleware لو حابب
         // $this->middleware('auth');
         // $this->middleware('admin');
     }
@@ -27,10 +30,10 @@ class DashboardController extends Controller
     {
         $userId = Auth::id();
 
-        // إشعارات آخر 10 إشعارات
+        // إشعارات آخر 6 إشعارات خاصة بالمستخدم
         $notifications = Notification::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
-            ->take(10)
+            ->take(6)
             ->get();
 
         // إجمالي الطلبات
@@ -47,22 +50,22 @@ class DashboardController extends Controller
 
         // المبيعات حسب الفئة
         $salesByCategory = DB::table('order_items')
-    ->join('products', 'order_items.product_id', '=', 'products.product_id')
-    ->join('categories', 'products.category_id', '=', 'categories.category_id')
-    ->select('categories.name', DB::raw('SUM(order_items.total_price) as amount'))
-    ->groupBy('categories.name')
-    ->get()
-    ->toArray(); 
+            ->join('products', 'order_items.product_id', '=', 'products.product_id')
+            ->join('categories', 'products.category_id', '=', 'categories.category_id')
+            ->select('categories.name', DB::raw('SUM(order_items.total_price) as amount'))
+            ->groupBy('categories.name')
+            ->get()
+            ->toArray(); 
 
-
+        // تمرير البيانات للواجهة
         return view('frontend.admin.dashboard.home', [
+            'notifications' => $notifications,  // متغير منفصل
             'data' => [
-                'notifications' => $notifications,
-                'total_orders' => $totalOrders,
-                'total_sales' => $totalSales,
-                'total_customers' => $totalCustomers,
-                'total_products' => $totalProducts,
-                'sales_by_category' => $salesByCategory
+                'total_orders'     => $totalOrders,
+                'total_sales'      => $totalSales,
+                'total_customers'  => $totalCustomers,
+                'total_products'   => $totalProducts,
+                'sales_by_category'=> $salesByCategory
             ]
         ]);
     }

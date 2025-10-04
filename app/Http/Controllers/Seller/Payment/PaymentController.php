@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -40,24 +41,16 @@ class PaymentController extends Controller
         $payment = Payment::with([
             'order.orderItems.product',
             'order.orderItems.variant',
-            'order.customer',
-            'storePaymentMethod.paymentOption'
+            'order.customer.user',
+            'storePaymentMethod.paymentOption',
+            'order.orderAddresses'
         ])->findOrFail($id);
 
-        return view('frontend.Seller.dashboard.payment.payment_details', compact('payment'));
+        // الحصول على بيانات المتجر الحالي
+        $store = Store::with(['addresses', 'phones'])
+                     ->where('store_id', Auth::user()->seller->store_id)
+                     ->first();
+
+        return view('frontend.Seller.dashboard.payment.payment_details', compact('payment', 'store'));
     }
-
-    // تحميل الفاتورة PDF
-    // public function download($id)
-    // {
-    //     $payment = Payment::with([
-    //         'order.orderItems.product',
-    //         'order.orderItems.variant',
-    //         'order.customer',
-    //         'storePaymentMethod.paymentOption'
-    //     ])->findOrFail($id);
-
-    //     $pdf = Pdf::loadView('frontend.Seller.dashboard.payment.payment_details_pdf', compact('payment'));
-    //     return $pdf->download('Invoice_'.$payment->payment_id.'.pdf');
-    // }
 }
